@@ -9,7 +9,7 @@ A growing collection of mini apps built with React and TypeScript. Each project 
 
 ## Projects
 
-- (to be added)
+- **Todo List** — add, complete, and filter tasks with `localStorage` persistence. [Live](/projects/todo-list) · [Source](https://github.com/qafaraz/react-typescript-projects/tree/main/src/projects/todo-list)
 
 ## Tech Stack
 

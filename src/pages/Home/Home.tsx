@@ -1,9 +1,12 @@
+import { Link } from "react-router";
 import { FaGithub } from "react-icons/fa";
+import { HiOutlineExternalLink } from "react-icons/hi";
 
 type ProjectCard = {
   title: string;
   description: string;
   href: string;
+  sourceHref: string;
 };
 
 const heroPills: readonly string[] = [
@@ -15,7 +18,16 @@ const heroPills: readonly string[] = [
   "Axios",
 ];
 
-const projects: readonly ProjectCard[] = [];
+const projects: readonly ProjectCard[] = [
+  {
+    title: "Todo List",
+    description:
+      "Add tasks, mark them done, and filter by status. Saved locally in the browser.",
+    href: "/projects/todo-list",
+    sourceHref:
+      "https://github.com/qafaraz/react-typescript-projects/tree/main/src/projects/todo-list",
+  },
+];
 
 export default function Home() {
   return (
@@ -55,38 +67,47 @@ export default function Home() {
       </div>
 
       <div className="mx-auto w-full max-w-5xl px-6 pb-14 pt-6">
-      <section>
-        <div className="mb-4 flex items-end justify-between">
-          <h2 className="text-lg font-semibold tracking-tight text-[#111111]">
-            Projects
-          </h2>
-        </div>
-
-        {projects.length === 0 ? (
-          <p className="py-8 text-center font-mono text-[13px] text-[#ccc]">
-            No projects yet — check back soon.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
-              <a
-                key={project.href}
-                href={project.href}
-                className="group rounded-2xl border border-[#e5e5e5] bg-[#ffffff] p-5 shadow-sm transition hover:border-[#d6d6d6] hover:shadow-md"
-              >
-                <div className="space-y-1.5">
-                  <h3 className="text-sm font-semibold text-[#111111] group-hover:text-[#2563eb]">
-                    {project.title}
-                  </h3>
-                  <p className="text-sm leading-6 text-[#111111]/70">
-                    {project.description}
-                  </p>
-                </div>
-              </a>
-            ))}
+        <section>
+          <div className="mb-4 flex items-end justify-between">
+            <h2 className="text-lg font-semibold tracking-tight text-[#111111]">
+              Projects
+            </h2>
           </div>
-        )}
-      </section>
+
+          {projects.length === 0 ? (
+            <p className="py-8 text-center font-mono text-[13px] text-[#ccc]">
+              No projects yet — check back soon.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {projects.map((project) => (
+                <article
+                  key={project.href}
+                  className="flex items-start justify-between gap-3 rounded-2xl border border-[#e5e5e5] bg-[#ffffff] p-5 shadow-sm transition hover:border-[#d6d6d6] hover:shadow-md"
+                >
+                  <Link to={project.href} className="group min-w-0 flex-1 no-underline">
+                    <h3 className="text-sm font-semibold text-[#111111] group-hover:text-[#2563eb]">
+                      {project.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-6 text-[#111111]/70">
+                      {project.description}
+                    </p>
+                  </Link>
+                  <a
+                    href={project.sourceHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="View source on GitHub"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-[#aaa] no-underline transition hover:bg-[#f5f5f5] hover:text-[#111111]"
+                  >
+                    source
+                    <HiOutlineExternalLink className="h-3 w-3" aria-hidden="true" />
+                  </a>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
