@@ -1,6 +1,6 @@
-import { type ComponentProps, useState } from "react";
-import { useTodos } from "./hooks/useTodos";
-import type { TodoFilter } from "./types/todo";
+import { type ComponentProps, useEffect, useState } from "react";
+import type { Todo, TodoFilter } from "./types/todo";
+import { loadTodos, saveTodos } from "./utils/storage";
 
 const FILTERS: readonly { value: TodoFilter; label: string }[] = [
   { value: "all", label: "All" },
@@ -8,21 +8,34 @@ const FILTERS: readonly { value: TodoFilter; label: string }[] = [
   { value: "completed", label: "Done" },
 ];
 
-export default function TodoListApp() {
-  const {
-    todos,
-    filter,
-    activeCount,
-    hasCompleted,
-    isEmpty,
-    addTodo,
-    toggleTodo,
-    removeTodo,
-    setFilter,
-    clearCompleted,
-  } = useTodos();
+function createTodo(text: string): Todo {
+  return {
+    id: crypto.randomUUID(),
+    text,
+    completed: false,
+    createdAt: Date.now(),
+  };
+}
 
+export default function TodoListApp() {
+  const [todos, setTodos] = useState<Todo[]>(() => loadTodos());
+  const [filter, setFilter] = useState<TodoFilter>("all");
   const [input, setInput] = useState("");
+
+  useEffect(() => {
+    saveTodos(todos);
+  }, [todos]);
+
+  const visibleTodos =
+    filter === "active"
+      ? todos.filter((todo) => !todo.completed)
+      : filter === "completed"
+        ? todos.filter((todo) => todo.completed)
+        : todos;
+
+  const activeCount = todos.filter((todo) => !todo.completed).length;
+  const hasCompleted = todos.some((todo) => todo.completed);
+  const isEmpty = todos.length === 0;
 
   const handleSubmit: NonNullable<ComponentProps<"form">["onSubmit"]> = (
     e,
@@ -30,7 +43,7 @@ export default function TodoListApp() {
     e.preventDefault();
     const text = input.trim();
     if (!text) return;
-    addTodo(text);
+    setTodos((prev) => [createTodo(text), ...prev]);
     setInput("");
   };
 
@@ -91,13 +104,13 @@ export default function TodoListApp() {
             })}
           </div>
 
-          {todos.length === 0 ? (
+          {visibleTodos.length === 0 ? (
             <p className="py-10 text-center font-mono text-[12px] text-[#ccc]">
               {emptyMessage}
             </p>
           ) : (
             <ul className="divide-y divide-[#f0f0f0]">
-              {todos.map((todo) => (
+              {visibleTodos.map((todo) => (
                 <li
                   key={todo.id}
                   className="group flex items-center gap-3 border-b border-[#f0f0f0] px-1 py-3 last:border-b-0"
@@ -106,7 +119,15 @@ export default function TodoListApp() {
                     id={`todo-${todo.id}`}
                     type="checkbox"
                     checked={todo.completed}
-                    onChange={() => toggleTodo(todo.id)}
+                    onChange={() =>
+                      setTodos((prev) =>
+                        prev.map((t) =>
+                          t.id === todo.id
+                            ? { ...t, completed: !t.completed }
+                            : t,
+                        ),
+                      )
+                    }
                     className="h-4 w-4 shrink-0 cursor-pointer rounded border-[#d6d6d6] text-[#2563eb] focus:ring-[#2563eb]/30"
                   />
                   <label
@@ -121,7 +142,9 @@ export default function TodoListApp() {
                   </label>
                   <button
                     type="button"
-                    onClick={() => removeTodo(todo.id)}
+                    onClick={() =>
+                      setTodos((prev) => prev.filter((t) => t.id !== todo.id))
+                    }
                     className="shrink-0 rounded-lg px-2 py-1 font-mono text-[11px] text-[#ccc] opacity-0 transition hover:bg-[#f5f5f5] hover:text-[#111111] group-hover:opacity-100 focus:opacity-100"
                     aria-label={`Remove "${todo.text}"`}
                   >
@@ -139,7 +162,9 @@ export default function TodoListApp() {
             {hasCompleted && (
               <button
                 type="button"
-                onClick={clearCompleted}
+                onClick={() =>
+                  setTodos((prev) => prev.filter((todo) => !todo.completed))
+                }
                 className="font-mono text-[11px] text-[#aaa] transition hover:text-[#111111]"
               >
                 clear completed
