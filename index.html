@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./github.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qafaraz | TypeScript Projects</title>
+    <meta name="description" content="qafaraz" />
+    <meta name="keywords" content="qafaraz" />
+    <meta name="author" content="qafaraz" />
+    <meta name="robots" content="qafaraz" />
+    <link
+      rel="canonical"
+      href="https://github.com/qafaraz/react-typescript-projects"
+    />
+
+    <meta property="og:type" content="qafaraz" />
+    <meta property="og:title" content="qafaraz" />
+    <meta property="og:description" content="qafaraz" />
+    <meta property="og:url" content="qafaraz" />
+    <meta property="og:image" content="qafaraz" />
+
+    <meta name="twitter:card" content="qafaraz" />
+    <meta name="twitter:title" content="qafaraz" />
+    <meta name="twitter:description" content="qafaraz" />
+    <meta name="twitter:image" content="qafaraz" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      const baseTitle = "qafaraz | TypeScript Projects";
+      const padding = "          ";
+      const track = `${padding}${baseTitle}${padding}`;
+      const windowSize = baseTitle.length + 2;
+      let position = track.length - windowSize;
+      let direction = -1;
+
+      const updateTitle = () => {
+        document.title = track.slice(position, position + windowSize);
+        if (position <= 0) {
+          direction = 1;
+        } else if (position + windowSize >= track.length) {
+          direction = -1;
+        }
+        position += direction;
+      };
+
+      updateTitle();
+      setInterval(updateTitle, 120);
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
